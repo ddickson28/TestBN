@@ -1,0 +1,21 @@
+import numpy as np #importing a module
+from mbnpy import variable, cpm, network, inference #importing relevant code modules from MBNpy
+
+#1 First task is to define the variables (nodes). In this case there are two. One Boolean node for train being on strike false/true and the other for Normal being late, conditioned on train strike. Also Boolean false/true.
+
+train = variable.Variable('TrainStrike', ['False','True'])
+late = variable.Variable('NormanLate', ['False','True'])
+
+#Defined two variables
+#First variable is for the train node, it has two conditions False or True
+#Second is for Norman being late, it has two conditions False or True 
+#(TrainStrike is the string identifier of the variable and False True are the two conditions that it can take.)
+
+#The next step is two assign marginal probabilities to node 'TrainStrike' and conditional probabilities to node #'NormanLate'. This is done in two parts. C - The rows define the two possible states. 0 for false, 1 for true.
+#p holds the probabilities for the two states e.g. 0.9 and 0.1. Both together form the CPM.
+
+cpm_train = cpm.Cpm(
+		[train], no_child=1,
+		C=np.array([[0], [1]], dtype=int),
+		p=np.array([0.9, 0.1])
+)
