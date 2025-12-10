@@ -1,5 +1,5 @@
 import numpy as np #importing a module
-from mbnpy import variable, cpm, network, inference #importing relevant code classes from MBNpy
+from mbnpy import variable, cpm, inference #importing relevant code classes from MBNpy
 
 #1 Define the variables (nodes). two states false/true
 #At this stage the nodes are not connected in any way.
@@ -67,6 +67,7 @@ Train_late = inference.condition(cpms=[cpm_late, cpm_train], cnd_vars=['NormanLa
 marg_Train_Late = inference.variable_elim(cpms=Train_late, var_elim=['NormanLate'], prod=True)
 print(marg_Train_Late)
 	
+
 
 
 
