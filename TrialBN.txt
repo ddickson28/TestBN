@@ -41,7 +41,7 @@ C_child=np.array([
 #Now to define the probabilities to go with the matrix
 #C has 4 rows, p must have 4 columns. (1x 4)
 
-p_child = np.array([0.9, 0.1, 0.2, 0.8])
+p_child = np.array([0.9, 0.2, 0.1, 0.8])
 
 #build the cpm_late from the C and p above. no_child=1, means that late is the child, everything after is a parent (train)
 
@@ -67,6 +67,7 @@ Train_late = inference.condition(cpms=[cpm_late, cpm_train], cnd_vars=['NormanLa
 marg_Train_Late = inference.variable_elim(cpms=Train_late, var_elim=['NormanLate'], prod=True)
 print(marg_Train_Late)
 	
+
 
 
 
