@@ -47,12 +47,6 @@ p_child = np.array([0.9, 0.1, 0.2, 0.8])
 
 cpm_late = cpm.Cpm([late, train], no_child=1, C= C_child, p=p_child)
 
-#Build the bayesian network
-bn = network.Network(
-	variables = [train, late],
-	cpms=[cpm_train, cpm_late]
-)
-
 #Carry out an inference, determine the marginal probability that norman is late. (Probability that he is late regardless of knowledge about train. summation of joint probability distribution with norman being late)
 
 marg_late = inferene.marginal(bn, query=['NormanLate'])
@@ -66,3 +60,4 @@ print("P(NormanLate = True):", marg_late[1])
 
 
 	
+
