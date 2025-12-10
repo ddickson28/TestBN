@@ -47,17 +47,9 @@ p_child = np.array([0.9, 0.1, 0.2, 0.8])
 
 cpm_late = cpm.Cpm([late, train], no_child=1, C= C_child, p=p_child)
 
-#Carry out an inference, determine the marginal probability that norman is late. (Probability that he is late regardless of knowledge about train. summation of joint probability distribution with norman being late)
-
-marg_late = inferene.marginal(bn, query=['NormanLate'])
-
-#new variable 'marg_late', use inference module, use marginal class, pass arguments 'bn' to perform inference on, query='NormanLate' ----> now have the marginal probabilities associated with norman late
-
-# there are two marginal probabilities above, norman late, norman not late. to isolate norman late print marg_late[1]. (0 would print marginal for norman is not late, false condition)
-
-print("P(NormanLate = True):", marg_late[1])
-
+#Carry out inference
 
 
 	
+
 
