@@ -1,21 +1,68 @@
 import numpy as np #importing a module
-from mbnpy import variable, cpm, network, inference #importing relevant code modules from MBNpy
+from mbnpy import variable, cpm, network, inference #importing relevant code classes from MBNpy
 
-#1 First task is to define the variables (nodes). In this case there are two. One Boolean node for train being on strike false/true and the other for Normal being late, conditioned on train strike. Also Boolean false/true.
+#1 Define the variables (nodes). two states false/true
+#At this stage the nodes are not connected in any way.
 
-train = variable.Variable('TrainStrike', ['False','True'])
+train = variable.Variable('TrainStrike', ['False','True']) #Variable Class inside the variable module, creates an objected called "train".
 late = variable.Variable('NormanLate', ['False','True'])
 
-#Defined two variables
-#First variable is for the train node, it has two conditions False or True
-#Second is for Norman being late, it has two conditions False or True 
-#(TrainStrike is the string identifier of the variable and False True are the two conditions that it can take.)
-
-#The next step is two assign marginal probabilities to node 'TrainStrike' and conditional probabilities to node #'NormanLate'. This is done in two parts. C - The rows define the two possible states. 0 for false, 1 for true.
-#p holds the probabilities for the two states e.g. 0.9 and 0.1. Both together form the CPM.
+#2 Define the cpm of the two variables from 1.
+#cpm defined in two parts. C defined the variables/outcomes in the cpm, p defines the probabilities assigned to those variables/outcomes
+# C has 2 states - has 2 rows, C has one variable Train late - has one column
+# p must have columns that match C rows
 
 cpm_train = cpm.Cpm(
 		[train], no_child=1,
 		C=np.array([[0], [1]], dtype=int),
 		p=np.array([0.9, 0.1])
 )
+
+
+#[train] is the object created previously to which the CPM will be assigned.
+#no_child is the number of child nodes assocaited with the CPM
+#C is the states that can be taken
+#np. is the module in which the array class is contained. 
+#the array class takes arguments [O] and [1] along with data type integer definition 2 x 1 matrix
+#p is the probability definition for the two states and takes values 0.9 and 0.1 -  1 x 2 matrix
+
+#Next need to define the Child CPM of the NormanLate|TrainStrike
+#Define C_child & p_child and then wrap into cpm
+# C has two variables to consider and has two columns (train on strike, norman is late)
+# C has 4 states FF, FT, TF, TT so has 4 rows
+
+C_child=np.array([
+				[0, 0], #False-False
+				[0, 1],	#False-True
+				[1, 0],	#True-False
+				[1, 1], #True-True
+				], dtype=int),
+
+#Now to define the probabilities to go with the matrix
+#C has 4 rows, p must have 4 columns. (1x 4)
+
+p_child = np.array([0.9, 0.1, 0.2, 0.8])
+
+#build the cpm_late from the C and p above. no_child=1, means that late is the child, everything after is a parent (train)
+
+cpm_late = cpm.Cpm([late, train], no_child=1, C= C_child, p=p_child)
+
+#Build the bayesian network
+bn = network.Network(
+	variables = [train, late],
+	cpms=[cpm_train, cpm_late]
+)
+
+#Carry out an inference, determine the marginal probability that norman is late. (Probability that he is late regardless of knowledge about train. summation of joint probability distribution with norman being late)
+
+marg_late = inferene.marginal(bn, query=['NormanLate'])
+
+#new variable 'marg_late', use inference module, use marginal class, pass arguments 'bn' to perform inference on, query='NormanLate' ----> now have the marginal probabilities associated with norman late
+
+# there are two marginal probabilities above, norman late, norman not late. to isolate norman late print marg_late[1]. (0 would print marginal for norman is not late, false condition)
+
+print("P(NormanLate = True):", marg_late[1])
+
+
+
+	
