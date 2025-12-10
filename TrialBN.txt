@@ -36,7 +36,7 @@ C_child=np.array([
 				[0, 1],	#False-True
 				[1, 0],	#True-False
 				[1, 1], #True-True
-				], dtype=int),
+				], dtype=int)
 
 #Now to define the probabilities to go with the matrix
 #C has 4 rows, p must have 4 columns. (1x 4)
@@ -48,8 +48,25 @@ p_child = np.array([0.9, 0.1, 0.2, 0.8])
 cpm_late = cpm.Cpm([late, train], no_child=1, C= C_child, p=p_child)
 
 #Carry out inference
+#use inference.variable_elim(cpms, var_elim, prod=True) method
+#cpms - defines the condition probability matrices to be used
+#var_elim - defines the variable to be eliminated TrainStrike (not interested in train strike true/false only interested in norman late.)
+#prod=True - take the products of the matrices to calculate joint probability distribution before eliminating the train strike variable
+# Collect CPMs for inference calls
+
+marg_late = inference.variable_elim(cpms=[cpm_train, cpm_late], var_elim=['TrainStrike'], prod=True)
+print(marg_late)
+
+#Condition on norman being late
+#Condition the child CPM - Insert evidence that Norman in late.
+#inference.condition(cpms, cnd_vars, cnd_states)
+
+Train_late = inference.condition(cpms=[cpm_late, cpm_train], cnd_vars=['NormanLate'], cnd_states=[1])
 
 
+marg_Train_Late = inference.variable_elim(cpms=Train_late, var_elim=['NormanLate'], prod=True)
+print(marg_Train_Late)
 	
+
 
 
